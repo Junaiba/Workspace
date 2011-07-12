@@ -49,22 +49,22 @@ function updateTable(){
 
 
 /***********Function on clicking the respective cell**************************************************/
-var turn = 1;
+//var turn = 1;
 $(function(){
 	$('td').click(function(){
 		val = $(this).attr('class');
 		var myArr = val.split("-");
 		var row = parseInt(myArr[0]);
 		var col = parseInt(myArr[1]);
-		isClickable();
-		if(grid[row][col] == 0){
+		isClickable(row,col);
+	/*	if(grid[row][col] == 0){
 			grid[row][col] = turn;
 			turn = turn == 1? 2 : 1;
 			
 			updateTable();
 		}
 		else
-			alert("You cant modify an occupied cell");
+			alert("You cant modify an occupied cell");*/
 });
 });
 
@@ -110,7 +110,22 @@ function createArray(m, n) {
 
 
 /********************************function to check whether cell is clickable or not*********************/
-
-function isClickable(){
-	alert(turn);
+var turn =1;
+function isClickable(row,col){
+	if(grid[row-1][col-1]==1|| grid[row-1][col]==1|| grid[row-1][col+1]==1 || grid[row+1][col-1]==1 || grid[row+1][col+1]==1|| grid[row+1][col]==1 || 
+		grid[row][col-1]==1|| grid[row][col+1]==1){
+			//alert("Clickable");
+				if(grid[row][col] == 0){
+			grid[row][col] = turn;
+			turn = turn == 1? 2 : 1;
+			
+			updateTable();
+		}
+		else
+			alert("You cant modify an occupied cell");
+	}
+	else
+				alert("you can click only adjacent cell");
+			//alert(grid[row+1][col-1]);
 }
+	
