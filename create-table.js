@@ -2,8 +2,8 @@ var grid;
 /****************************Initialising Main Functions********************************************/
 
 $(function(){
-   createArray(20,20);
-	createTable(20,20);
+   createArray(10,6);
+	createTable(10,6);
 	updateTable();
 });
 
@@ -30,7 +30,6 @@ function createTable(m,n){
 /************function to get colours on the  table on click********************************************/
 
 function updateTable(){
-
     rc = grid.length;
     cc = grid[0].length;
     for (var row=0;row<rc;row++){
@@ -49,22 +48,24 @@ function updateTable(){
 
 
 /***********Function on clicking the respective cell**************************************************/
-//var turn = 1;
+var turn = 1;
 $(function(){
 	$('td').click(function(){
 		val = $(this).attr('class');
 		var myArr = val.split("-");
 		var row = parseInt(myArr[0]);
 		var col = parseInt(myArr[1]);
-		isClickable(row,col);
-	/*	if(grid[row][col] == 0){
+		//alert(grid[row][col]);
+		if(grid[row][col]==1|| grid[row][col]==2){
+			alert("you cant click an occupied cell");
+		}
+	    if(isClickable(row,col,turn)){
 			grid[row][col] = turn;
 			turn = turn == 1? 2 : 1;
-			
 			updateTable();
 		}
-		else
-			alert("You cant modify an occupied cell");*/
+		else 
+			alert("Oops! Next Player");
 });
 });
 
@@ -110,22 +111,38 @@ function createArray(m, n) {
 
 
 /********************************function to check whether cell is clickable or not*********************/
-var turn =1;
-function isClickable(row,col){
-	if(grid[row-1][col-1]==1|| grid[row-1][col]==1|| grid[row-1][col+1]==1 || grid[row+1][col-1]==1 || grid[row+1][col+1]==1|| grid[row+1][col]==1 || 
-		grid[row][col-1]==1|| grid[row][col+1]==1){
-			//alert("Clickable");
-				if(grid[row][col] == 0){
-			grid[row][col] = turn;
-			turn = turn == 1? 2 : 1;
-			
-			updateTable();
-		}
-		else
-			alert("You cant modify an occupied cell");
-	}
-	else
-				alert("you can click only adjacent cell");
-			//alert(grid[row+1][col-1]);
-}
+
+function isClickable(row,col,turn){
 	
+	if((row-1)>=0 && (row+1)<=grid.length){	
+	
+	if(grid[row-1][col-1]==turn|| grid[row-1][col]==turn|| grid[row-1][col+1]==turn || grid[row+1][col-1]==turn || grid[row+1][col+1]==turn|| grid[row+1][col]==turn || 
+		grid[row][col-1]==turn || grid[row][col+1]==turn){
+			//alert(turn);
+			//alert(grid.length);
+				return true;
+		}
+
+		else
+			if(grid[row][col]==0)
+			return false;
+		
+	}
+	else {
+		if(   grid[row+1][col-1]==turn || grid[row+1][col+1]==turn|| grid[row+1][col]==turn || 
+				grid[row][col-1]==turn || grid[row][col+1]==turn){
+					//alert(turn);
+						return true;
+				}
+
+				else
+					if(grid[row][col]==0)
+					return false;
+}
+}
+/***************************************************************************************************/
+
+
+/********************************function to count max no. of colours in the table*********************/
+	 
+ 
