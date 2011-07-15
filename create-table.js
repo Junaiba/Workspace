@@ -2,8 +2,8 @@ var grid;
 /****************************Initialising Main Functions********************************************/
 
 $(function(){
-   createArray(10,6);
-	createTable(10,6);
+   createArray(5,4);
+	createTable(5,4);
 	updateTable();
 });
 
@@ -25,9 +25,10 @@ function createTable(m,n){
 	});
 }
 
-/***************************************************************************************************/
-	
-/************function to get colours on the  table on click********************************************/
+/***************************************************************************************************
+ * updateTable
+ * Update the html table with  the contents of the grid
+ ***************************************************************************************************/
 
 function updateTable(){
     rc = grid.length;
@@ -56,16 +57,14 @@ $(function(){
 		var row = parseInt(myArr[0]);
 		var col = parseInt(myArr[1]);
 		//alert(grid[row][col]);
-		if(grid[row][col]==1|| grid[row][col]==2){
-			alert("you cant click an occupied cell");
-		}
+		
 	    if(isClickable(row,col,turn)){
 			grid[row][col] = turn;
+			
 			turn = turn == 1? 2 : 1;
 			updateTable();
+			updateAdjacentCell(row,col,turn);
 		}
-		else 
-			alert("Oops! Next Player");
 });
 });
 
@@ -82,8 +81,20 @@ function setRed(row,col){
 function setBlue(row,col){
 	var new_class = "."+ row +"-"+col;
 	$(new_class).css("background","#00ff00");
-}
 	
+}
+
+function setNewBlue(row,col){
+	var new_class = "."+ row +"-"+col;
+	$(new_class).css("background","#00ff00");
+	grid[row][col] = 2;
+}
+
+function setNewRed(row,col){
+	var new_class = "."+ row +"-"+col;
+	$(new_class).css("background","red");
+	grid[row][col] = 1;
+}
 /***************************************************************************************************/
 
 
@@ -114,35 +125,123 @@ function createArray(m, n) {
 
 function isClickable(row,col,turn){
 	
-	if((row-1)>=0 && (row+1)<=grid.length){	
-	
-	if(grid[row-1][col-1]==turn|| grid[row-1][col]==turn|| grid[row-1][col+1]==turn || grid[row+1][col-1]==turn || grid[row+1][col+1]==turn|| grid[row+1][col]==turn || 
-		grid[row][col-1]==turn || grid[row][col+1]==turn){
-			//alert(turn);
-			//alert(grid.length);
-				return true;
-		}
-
-		else
-			if(grid[row][col]==0)
-			return false;
-		
+	if(grid[row][col] != 0){
+		alert("you cant click an occupied cell");
+		return false;
 	}
-	else {
-		if(   grid[row+1][col-1]==turn || grid[row+1][col+1]==turn|| grid[row+1][col]==turn || 
-				grid[row][col-1]==turn || grid[row][col+1]==turn){
-					//alert(turn);
-						return true;
-				}
-
-				else
-					if(grid[row][col]==0)
-					return false;
-}
+	
+	rc = grid.length;
+	cc = grid[0].length;
+	
+	if( (row-1 >= 0) && (col-1 >= 0) && (grid[row-1][col-1] == turn) ) return true;
+	if( (row-1 >= 0) && (grid[row-1][col] == turn) )   return true;
+	if( (row-1 >= 0) && (col+1 < cc) && (grid[row-1][col+1] == turn) ) return true;
+	
+	if( (col-1 >= 0) && (grid[row][col-1] == turn) )   return true;
+	if( (col+1 < cc) && (grid[row][col+1] == turn) )  return true;
+	
+	if( (row+1 < rc) && (col+1 < cc) && (grid[row+1][col+1] == turn) ) return true;
+	if( (row+1 < rc) && (grid[row+1][col] == turn) )   return true;
+	if( (row+1 < rc) && (col-1 >= 0) && (grid[row+1][col-1] == turn) ) return true;
+	
+	var color = turn == 1? "red" : "green";
+	alert("It is " + color + "'s turn and please click a box next to " + color + " box");
+	
+	return false;
+	
+	
 }
 /***************************************************************************************************/
 
 
-/********************************function to count max no. of colours in the table*********************/
-	 
- 
+/********************************function to change the color of  adjacent cells*******************************/
+
+function updateAdjacentCell(row,col,turn){
+	rc = grid.length;
+	cc = grid[0].length;
+	if ( (row-1 >= 0) && (col-1 >= 0) && (grid[row-1][col-1] !=0) ) {
+		if(grid[row-1][col-1] == 1 && grid[row][col] == 2){
+			setNewBlue(row-1,col-1);
+		}
+	  if(grid[row-1][col-1] == 2 && grid[row][col] == 1){
+			setNewRed(row-1,col-1);
+		}
+	}
+	if ( (row-1 >= 0) && (grid[row-1][col] != 0) ){
+		if(grid[row-1][col] == 1 && grid[row][col] == 2){
+			setNewBlue(row-1,col);
+		}
+	  if(grid[row-1][col] == 2 && grid[row][col] == 1){
+			setNewRed(row-1,col);
+		}
+		}
+	if ( (row-1 >= 0) && (col+1 < cc) && (grid[row-1][col+1] != 0) ){
+		if(grid[row-1][col+1] == 1 && grid[row][col] == 2){
+			setNewBlue(row-1,col+1);
+		}
+	  if(grid[row-1][col+1] == 2 && grid[row][col] == 1){
+			setNewRed(row-1,col+1);
+		}
+		}
+	
+	if ( (col-1 >= 0) && (grid[row][col+1] !=0 ) ) {
+		if(grid[row][col+1] == 1 && grid[row][col] == 2){
+			setNewBlue(row,col+1);
+		}
+	  if(grid[row][col+1] == 2 && grid[row][col] == 1){
+			setNewRed(row,col+1);
+		}
+		}
+	if ( (col+1 < cc) && (grid[row+1][col+1] !=0) ){
+		if(grid[row+1][col+1] == 1 && grid[row][col] == 2){
+			setNewBlue(row+1,col+1);
+		}
+	  if(grid[row+1][col+1] == 2 && grid[row][col] == 1){
+			setNewRed(row+1,col+1);
+		}
+		}
+	
+	if ( (row+1 < rc) && (col+1 < cc) && (grid[row+1][col] != 0) ) {
+		if(grid[row+1][col] == 1 && grid[row][col] == 2){
+			setNewBlue(row+1,col);
+		}
+	  if(grid[row+1][col] == 2 && grid[row][col] == 1){
+			setNewRed(row+1,col);
+		}
+		}
+	if ( (row+1 < rc) && (grid[row+1][col-1] != 0) ){
+		if(grid[row+1][col-1] == 1 && grid[row][col] == 2){
+			setNewBlue(row+1,col-1);
+		}
+	  if(grid[row+1][col-1] == 2 && grid[row][col] == 1){
+			setNewRed(row+1,col-1);
+		}
+		}
+	if ( (row+1 < rc) && (col-1 >= 0) && (grid[row][col-1] != 0) ) {
+		if(grid[row][col-1] == 1 && grid[row][col] == 2){
+			setNewBlue(row,col-1);
+		}
+	  if(grid[row][col-1] == 2 && grid[row][col] == 1){
+			setNewRed(row,col-1);
+		}
+	}
+
+}
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
